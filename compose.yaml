@@ -1,0 +1,54 @@
+services:
+  postgres:
+    image: postgres:17.4-alpine
+    environment:
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD}
+      TZ: Asia/Taipei
+      PGTZ: Asia/Taipei
+    ports:
+      - 5435:5432
+    volumes:
+      - db:/var/lib/postgresql/data
+    networks:
+      - go-docker-net
+  pgadmin:
+    image: dpage/pgadmin4:9
+    environment:
+      PGADMIN_DEFAULT_EMAIL: ${PGADMIN_DEFAULT_EMAIL}
+      PGADMIN_DEFAULT_PASSWORD: ${PGADMIN_DEFAULT_PASSWORD}
+    ports:
+      - 5050:80
+    networks:
+      - go-docker-net
+  app:
+    build:
+      dockerfile: ./deployments/local/backend/Dockerfile
+      context: .
+    volumes:
+      - ./:/app
+      - $HOME/.aws:/root/.aws
+    ports:
+      - 8080:8080
+      - 4040:4040
+    depends_on:
+      - postgres
+    networks:
+      - go-docker-net
+    env_file:
+      - .env
+  nginx:
+    image: nginx:1.27.5-alpine
+    depends_on:
+      - app
+    ports:
+      - 80:80
+    volumes:
+      - ./deployments/local/nginx/conf.d/:/etc/nginx/conf.d
+    networks:
+      - go-docker-net
+
+networks:
+  go-docker-net:
+
+volumes:
+  db:
