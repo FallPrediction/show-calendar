@@ -50,10 +50,10 @@ func (handler *Handler) sendResponseWithPagination(c *gin.Context, statusCode in
 		"message": message,
 		"data":    data,
 		"pagination": gin.H{
-			"currentPage": currentPage,
-			"lastPage":    lastPage,
-			"total":       total,
-			"perPage":     perPage,
+			"current_page": currentPage,
+			"last_page":    lastPage,
+			"total":        total,
+			"per_page":     perPage,
 		},
 	})
 }
