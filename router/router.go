@@ -2,6 +2,7 @@ package router
 
 import (
 	"show-calendar/handlers"
+	"show-calendar/middleware"
 
 	"github.com/gin-gonic/gin"
 )
@@ -13,5 +14,7 @@ func NewRouter(registerHandler handlers.RegisterHandler, authenticateHandler han
 		apis.POST("/register", registerHandler.Create)
 		apis.POST("/login", authenticateHandler.Login)
 	}
+	authorized := apis.Group("/")
+	authorized.Use(middleware.AuthRequired())
 	return router
 }
