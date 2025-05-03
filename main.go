@@ -18,8 +18,10 @@ func main() {
 	userRepository := repository.NewUserRepository(db)
 	registerService := service.NewRegisterService(userRepository)
 	registerHandler := handlers.NewRegisterHandler(handler, registerService)
+	authenticateService := service.NewAuthenticateService(userRepository)
+	authenticateHandler := handlers.NewAuthenticateHandler(handler, authenticateService)
 	rules.BindValidator(translator)
-	router := router.NewRouter(registerHandler)
+	router := router.NewRouter(registerHandler, authenticateHandler)
 
 	router.Run()
 }
