@@ -19,6 +19,7 @@ type rule interface {
 
 func BindValidator(trans ut.Translator) {
 	if v, ok := binding.Validator.Engine().(*validator.Validate); ok {
+		v.RegisterValidation("exists", (&exists{}).validate())
 		v.RegisterValidation("unique", (&unique{}).validate())
 		registerTranslation(v, trans)
 	}

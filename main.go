@@ -23,8 +23,11 @@ func main() {
 	showRepository := repository.NewShowRepository(db)
 	showService := service.NewShowService(showRepository)
 	showHandler := handlers.NewShowHandler(handler, showService)
+	eventRepository := repository.NewEventRepository(db)
+	eventService := service.NewEventService(eventRepository)
+	eventHandler := handlers.NewEventHandler(handler, eventService)
 	rules.BindValidator(translator)
-	router := router.NewRouter(registerHandler, authenticateHandler, showHandler)
+	router := router.NewRouter(registerHandler, authenticateHandler, showHandler, eventHandler)
 
 	router.Run()
 }

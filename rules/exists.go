@@ -1,0 +1,27 @@
+package rules
+
+import (
+	"fmt"
+	"show-calendar/config"
+	"show-calendar/initialize"
+
+	"github.com/go-playground/validator/v10"
+)
+
+var _ rule = new(exists)
+
+type exists struct{}
+
+func (r *exists) validate() func(fl validator.FieldLevel) bool {
+	return func(fl validator.FieldLevel) bool {
+		param := getParams(&fl)
+		value := fl.Field().Uint()
+		pg := config.NewPg()
+		db := initialize.NewDB(pg)
+		var count int64
+		if db.Table(param[0]).Where(fmt.Sprintf("%s = ?", param[1]), value).Count(&count); count > 0 {
+			return true
+		}
+		return false
+	}
+}

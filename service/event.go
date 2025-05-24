@@ -1,0 +1,70 @@
+package service
+
+import (
+	"show-calendar/models"
+	"show-calendar/repository"
+	"show-calendar/request"
+	"show-calendar/utils"
+	"strings"
+	"time"
+
+	"gorm.io/datatypes"
+)
+
+type EventService struct {
+	repository repository.EventRepository
+}
+
+func (service *EventService) Create(request *request.CreateEventRequest) (models.Event, error) {
+	meta, err := (&utils.OpenGraph{}).Fetch(request.Url)
+	if err != nil {
+		return models.Event{}, err
+	}
+	name := service.getName(request.Name, meta)
+	event := models.Event{
+		ShowId:        request.ShowId,
+		Name:          name,
+		OgImage:       meta.Image,
+		OgUrl:         meta.Url,
+		OgTitle:       meta.Title,
+		OgDescription: meta.Description,
+		StartDate:     service.getStartDate(request.StartDate),
+		EndDate:       service.getEndDate(request.EndDate),
+	}
+	return event, service.repository.Create(&event)
+}
+
+// If the parameter is empty, return today's date.
+func (service *EventService) getStartDate(startDate string) datatypes.Date {
+	var result time.Time
+	if startDate != "" {
+		result, _ = time.Parse(time.DateOnly, startDate)
+	} else {
+		result = time.Now()
+	}
+	return datatypes.Date(result)
+}
+
+// If the parameter is empty, return the date in 30 days.
+func (service *EventService) getEndDate(endDate string) datatypes.Date {
+	var result time.Time
+	if endDate != "" {
+		result, _ = time.Parse(time.DateOnly, endDate)
+	} else {
+		result = time.Now().Add(time.Hour * 24 * 30)
+	}
+	return datatypes.Date(result)
+}
+
+func (service *EventService) getName(name string, meta utils.OpenGraphMeta) string {
+	if name == "" {
+		description, _, _ := strings.Cut(meta.Description, "\n")
+		s := []rune(meta.Title + " " + description)
+		return string(s[:min(50, len(s))])
+	}
+	return name
+}
+
+func NewEventService(repo repository.EventRepository) EventService {
+	return EventService{repo}
+}
