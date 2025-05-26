@@ -9,6 +9,7 @@ import (
 
 type Event struct {
 	Id            uint32
+	Name          string
 	ShowId        uint32
 	OgImage       string
 	OgUrl         string

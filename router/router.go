@@ -13,6 +13,7 @@ func NewRouter(registerHandler handlers.RegisterHandler, authenticateHandler han
 	{
 		apis.POST("/register", registerHandler.Create)
 		apis.POST("/login", authenticateHandler.Login)
+		apis.GET("/shows/:id", showHandler.Show)
 	}
 	authorized := apis.Group("/")
 	authorized.Use(middleware.AuthRequired())
