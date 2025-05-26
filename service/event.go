@@ -15,6 +15,16 @@ type EventService struct {
 	repository repository.EventRepository
 }
 
+func (service *EventService) GetByShowId(id string, request *request.GetEventByShowIdRequest) ([]models.Event, int64, error) {
+	if request.CurrentPage == 0 {
+		request.CurrentPage = 1
+	}
+	if request.PerPage == 0 {
+		request.PerPage = 20
+	}
+	return service.repository.GetByShowId(id, request)
+}
+
 func (service *EventService) Create(request *request.CreateEventRequest) (models.Event, error) {
 	meta, err := (&utils.OpenGraph{}).Fetch(request.Url)
 	if err != nil {

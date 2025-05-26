@@ -1,10 +1,9 @@
 package handlers
 
 import (
-	// "net/http"
-	// "show-calendar/request"
 	"net/http"
 	"show-calendar/request"
+	"show-calendar/resource"
 	"show-calendar/service"
 
 	"github.com/gin-gonic/gin"
@@ -13,6 +12,27 @@ import (
 type EventHandler struct {
 	baseHandler Handler
 	service     service.EventService
+}
+
+func (handler *EventHandler) GetByShowId(c *gin.Context) {
+	if err := c.ShouldBindUri(&struct {
+		id uint32 `form:"id" binding:"required,exists=shows id"`
+	}{}); err != nil {
+		handler.baseHandler.handleError(c, err)
+		return
+	}
+	var request request.GetEventByShowIdRequest
+	if err := c.ShouldBind(&request); err != nil {
+		handler.baseHandler.handleError(c, err)
+		return
+	}
+
+	events, count, err := handler.service.GetByShowId(c.Param("id"), &request)
+
+	handler.baseHandler.handleErrorAndReturn(c, err, func() {
+		resource := resource.NewEventSlice(events)
+		handler.baseHandler.sendResponseWithPagination(c, http.StatusOK, "成功", resource.ToSlice(), request.CurrentPage, request.PerPage, int(count))
+	})
 }
 
 func (handler *EventHandler) Create(c *gin.Context) {
