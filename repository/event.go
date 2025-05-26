@@ -22,6 +22,18 @@ func (repository *EventRepository) GetByShowId(id string, request *request.GetEv
 	return events, count, err
 }
 
+func (repository *EventRepository) GetLatestEvent() ([]models.Event, error) {
+	var events []models.Event
+	err := repository.db.Table("events AS e").
+		Joins("INNER JOIN shows AS s ON e.show_id = s.id").
+		Where("NOW() <= s.end_date").
+		Where(
+			"(s.id, e.updated_at) IN (?)",
+			repository.db.Select("show_id", "MAX(updated_at)").Table("events").Group("show_id")).
+		Find(&events).Error
+	return events, err
+}
+
 func (repository *EventRepository) Create(event *models.Event) error {
 	return repository.db.Create(&event).Error
 }

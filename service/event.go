@@ -25,6 +25,10 @@ func (service *EventService) GetByShowId(id string, request *request.GetEventByS
 	return service.repository.GetByShowId(id, request)
 }
 
+func (service *EventService) GetLatestEvent() ([]models.Event, error) {
+	return service.repository.GetLatestEvent()
+}
+
 func (service *EventService) Create(request *request.CreateEventRequest) (models.Event, error) {
 	meta, err := (&utils.OpenGraph{}).Fetch(request.Url)
 	if err != nil {

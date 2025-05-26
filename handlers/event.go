@@ -35,6 +35,14 @@ func (handler *EventHandler) GetByShowId(c *gin.Context) {
 	})
 }
 
+func (handler *EventHandler) GetLatestEvent(c *gin.Context) {
+	events, err := handler.service.GetLatestEvent()
+	handler.baseHandler.handleErrorAndReturn(c, err, func() {
+		resource := resource.NewEventSlice(events)
+		handler.baseHandler.sendResponse(c, http.StatusOK, "成功", resource.ToSlice())
+	})
+}
+
 func (handler *EventHandler) Create(c *gin.Context) {
 	var request request.CreateEventRequest
 	if err := c.ShouldBind(&request); err != nil {
