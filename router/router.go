@@ -7,7 +7,7 @@ import (
 	"github.com/gin-gonic/gin"
 )
 
-func NewRouter(registerHandler handlers.RegisterHandler, authenticateHandler handlers.AuthenticateHandler) *gin.Engine {
+func NewRouter(registerHandler handlers.RegisterHandler, authenticateHandler handlers.AuthenticateHandler, showHandler handlers.ShowHandler) *gin.Engine {
 	router := gin.Default()
 	apis := router.Group("api")
 	{
@@ -16,5 +16,8 @@ func NewRouter(registerHandler handlers.RegisterHandler, authenticateHandler han
 	}
 	authorized := apis.Group("/")
 	authorized.Use(middleware.AuthRequired())
+	{
+		authorized.POST("/shows", showHandler.Create)
+	}
 	return router
 }
