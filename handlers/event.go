@@ -35,6 +35,21 @@ func (handler *EventHandler) GetByShowId(c *gin.Context) {
 	})
 }
 
+func (handler *EventHandler) Index(c *gin.Context) {
+	var request request.IndexEventsRequest
+	if err := c.ShouldBind(&request); err != nil {
+		handler.baseHandler.handleError(c, err)
+		return
+	}
+
+	events, err := handler.service.Index(&request)
+
+	handler.baseHandler.handleErrorAndReturn(c, err, func() {
+		resource := resource.NewEventSlice(events)
+		handler.baseHandler.sendResponse(c, http.StatusOK, "成功", resource.ToSlice())
+	})
+}
+
 func (handler *EventHandler) GetLatestEvent(c *gin.Context) {
 	events, err := handler.service.GetLatestEvent()
 	handler.baseHandler.handleErrorAndReturn(c, err, func() {

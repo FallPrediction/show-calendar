@@ -16,6 +16,7 @@ func NewRouter(registerHandler handlers.RegisterHandler, authenticateHandler han
 		apis.GET("/shows/:id", showHandler.Show)
 		apis.GET("/shows/:id/events", eventHandler.GetByShowId)
 		apis.GET("/events/home", eventHandler.GetLatestEvent)
+		apis.GET("/events", eventHandler.Index)
 	}
 	authorized := apis.Group("/")
 	authorized.Use(middleware.AuthRequired())

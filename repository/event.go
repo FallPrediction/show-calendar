@@ -3,6 +3,7 @@ package repository
 import (
 	"show-calendar/models"
 	"show-calendar/request"
+	"time"
 
 	"gorm.io/gorm"
 )
@@ -20,6 +21,15 @@ func (repository *EventRepository) GetByShowId(id string, request *request.GetEv
 		Where("show_id = ?", id).
 		Find(&events).Error
 	return events, count, err
+}
+
+func (repository *EventRepository) Index(startDate, endDate time.Time) ([]models.Event, error) {
+	var events []models.Event
+	err := repository.db.Order("start_date asc").
+		Where("start_date <= ?", endDate).
+		Where("end_date >= ?", startDate).
+		Find(&events).Error
+	return events, err
 }
 
 func (repository *EventRepository) GetLatestEvent() ([]models.Event, error) {
