@@ -9,6 +9,8 @@ import (
 
 func NewRouter(registerHandler handlers.RegisterHandler, authenticateHandler handlers.AuthenticateHandler, showHandler handlers.ShowHandler, eventHandler handlers.EventHandler) *gin.Engine {
 	router := gin.Default()
+	router.Use(middleware.Cors())
+
 	apis := router.Group("api")
 	{
 		apis.POST("/register", registerHandler.Create)
