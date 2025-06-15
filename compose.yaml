@@ -40,12 +40,25 @@ services:
     image: nginx:1.27.5-alpine
     depends_on:
       - app
+      - npm
     ports:
       - 80:80
     volumes:
       - ./deployments/local/nginx/conf.d/:/etc/nginx/conf.d
     networks:
       - go-docker-net
+  npm:
+    build:
+      dockerfile: ./deployments/local/frontend/Dockerfile
+      context: .
+    ports:
+      - 9000:9000
+    volumes:
+      - ../quasar:/frontend
+    networks:
+      - go-docker-net
+    stdin_open: true 
+    tty: true
 
 networks:
   go-docker-net:
