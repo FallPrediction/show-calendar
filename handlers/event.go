@@ -36,13 +36,7 @@ func (handler *EventHandler) GetByShowId(c *gin.Context) {
 }
 
 func (handler *EventHandler) GetLatestEvents(c *gin.Context) {
-	var request request.LatestEventsRequest
-	if err := c.ShouldBind(&request); err != nil {
-		handler.baseHandler.handleError(c, err)
-		return
-	}
-
-	events, err := handler.service.GetLatestEvents(&request)
+	events, err := handler.service.GetLatestEvents()
 
 	handler.baseHandler.handleErrorAndReturn(c, err, func() {
 		resource := resource.NewEventSlice(events)

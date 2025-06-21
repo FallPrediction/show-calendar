@@ -23,10 +23,9 @@ func (repository *EventRepository) GetByShowId(id string, request *request.GetEv
 	return events, count, err
 }
 
-func (repository *EventRepository) Index(startDate, endDate time.Time) ([]models.Event, error) {
+func (repository *EventRepository) Index(startDate time.Time) ([]models.Event, error) {
 	var events []models.Event
-	err := repository.db.Order("start_date asc").
-		Where("start_date <= ?", endDate).
+	err := repository.db.Order("start_date desc").
 		Where("end_date >= ?", startDate).
 		Find(&events).Error
 	return events, err

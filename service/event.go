@@ -25,14 +25,10 @@ func (service *EventService) GetByShowId(id string, request *request.GetEventByS
 	return service.repository.GetByShowId(id, request)
 }
 
-func (service *EventService) GetLatestEvents(request *request.LatestEventsRequest) ([]models.Event, error) {
-	startDate, err := time.Parse(time.DateOnly, request.Date)
-	if err != nil {
-		return nil, err
-	}
-	startDate = startDate.AddDate(0, 0, -startDate.Day()+1)
-	endDate := startDate.AddDate(0, 1, -startDate.Day())
-	return service.repository.Index(startDate, endDate)
+func (service *EventService) GetLatestEvents() ([]models.Event, error) {
+	lastMonth := time.Now().AddDate(0, -1, 0)
+	startDate := lastMonth.AddDate(0, 0, -lastMonth.Day()+1)
+	return service.repository.Index(startDate)
 }
 
 func (service *EventService) GetLatestEventEachShow() ([]models.Event, error) {
