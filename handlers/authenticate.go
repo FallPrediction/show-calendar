@@ -1,10 +1,13 @@
 package handlers
 
 import (
+	"errors"
+	"net/http"
 	"show-calendar/request"
 	"show-calendar/service"
 
 	"github.com/gin-gonic/gin"
+	"gorm.io/gorm"
 )
 
 type AuthenticateHandler struct {
@@ -18,9 +21,31 @@ func (handler *AuthenticateHandler) Login(c *gin.Context) {
 		handler.baseHandler.handleError(c, err)
 		return
 	}
-	token, err := handler.service.Login(&request)
+	token, expires, err := handler.service.Login(&request)
+	if errors.Is(err, gorm.ErrRecordNotFound) {
+		handler.baseHandler.sendResponse(c, http.StatusNotFound, "該信箱尚未註冊", nil)
+		return
+	}
+	http.SetCookie(c.Writer, &http.Cookie{
+		Name:     "authorization",
+		Value:    token,
+		Path:     "/",
+		Expires:  expires,
+		SameSite: http.SameSiteStrictMode,
+		Secure:   true,
+		HttpOnly: true,
+	})
+
+	http.SetCookie(c.Writer, &http.Cookie{
+		Name:     "login",
+		Value:    "1",
+		Path:     "/",
+		Expires:  expires,
+		SameSite: http.SameSiteStrictMode,
+		Secure:   true,
+	})
 	handler.baseHandler.handleErrorAndReturn(c, err, func() {
-		handler.baseHandler.sendResponse(c, 200, "登入成功", map[string]string{"access_token": token, "token_type": "bearer"})
+		handler.baseHandler.sendResponse(c, http.StatusOK, "登入成功", nil)
 	})
 }
 

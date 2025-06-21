@@ -26,7 +26,7 @@ type userClaims struct {
 	jwt.RegisteredClaims
 }
 
-func (j *Jwt) CreateUserToken(user *models.User) (string, error) {
+func (j *Jwt) CreateUserToken(user *models.User) (string, time.Time, error) {
 	logger := initialize.NewLogger()
 	key := os.Getenv("APP_KEY")
 	app := os.Getenv("APP_NAME")
@@ -41,6 +41,7 @@ func (j *Jwt) CreateUserToken(user *models.User) (string, error) {
 		refreshTime = 10800
 	}
 
+	expiresAt := time.Now().Add(time.Second * time.Duration(lifeTime))
 	claims := userClaims{
 		UserData{
 			UserId:      user.Id,
@@ -50,7 +51,7 @@ func (j *Jwt) CreateUserToken(user *models.User) (string, error) {
 			RefreshTime: time.Now().Add(time.Second * time.Duration(refreshTime)).Unix(),
 		},
 		jwt.RegisteredClaims{
-			ExpiresAt: jwt.NewNumericDate(time.Now().Add(time.Second * time.Duration(lifeTime))),
+			ExpiresAt: jwt.NewNumericDate(expiresAt),
 			IssuedAt:  jwt.NewNumericDate(time.Now()),
 			Issuer:    app,
 			Audience:  []string{app},
@@ -61,7 +62,7 @@ func (j *Jwt) CreateUserToken(user *models.User) (string, error) {
 	if err != nil {
 		logger.Error("Generate a JWT token failed. ", err)
 	}
-	return tokenString, err
+	return tokenString, expiresAt, err
 }
 
 func (j *Jwt) ParseUserToken(tokenString string) (*userClaims, error) {
