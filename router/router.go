@@ -23,6 +23,7 @@ func NewRouter(registerHandler handlers.RegisterHandler, authenticateHandler han
 	authorized := apis.Group("/")
 	authorized.Use(middleware.AuthRequired())
 	{
+		authorized.POST("/logout", authenticateHandler.Logout)
 		authorized.POST("/shows", showHandler.Create)
 		authorized.POST("/events", eventHandler.Create)
 	}

@@ -49,6 +49,22 @@ func (handler *AuthenticateHandler) Login(c *gin.Context) {
 	})
 }
 
+func (handler *AuthenticateHandler) Logout(c *gin.Context) {
+	http.SetCookie(c.Writer, &http.Cookie{
+		Name:   "authorization",
+		Value:  "",
+		Path:   "/",
+		MaxAge: -1,
+	})
+	http.SetCookie(c.Writer, &http.Cookie{
+		Name:   "login",
+		Value:  "",
+		Path:   "/",
+		MaxAge: -1,
+	})
+	handler.baseHandler.sendResponse(c, http.StatusOK, "登出成功", nil)
+}
+
 func NewAuthenticateHandler(handler Handler, service service.AuthenticateService) AuthenticateHandler {
 	return AuthenticateHandler{handler, service}
 }
