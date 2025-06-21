@@ -13,8 +13,8 @@ func NewRouter(registerHandler handlers.RegisterHandler, authenticateHandler han
 
 	apis := router.Group("api")
 	{
-		apis.POST("/register", registerHandler.Create)
-		apis.POST("/login", authenticateHandler.Login)
+		apis.POST("/register", middleware.CheckCsrf(), registerHandler.Create)
+		apis.POST("/login", middleware.CheckCsrf(), authenticateHandler.Login)
 		apis.GET("/shows/:id", showHandler.Show)
 		apis.GET("/shows/:id/events", eventHandler.GetByShowId)
 		apis.GET("/events/home", eventHandler.GetLatestEvent)
