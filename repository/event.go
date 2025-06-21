@@ -32,7 +32,7 @@ func (repository *EventRepository) Index(startDate, endDate time.Time) ([]models
 	return events, err
 }
 
-func (repository *EventRepository) GetLatestEvent() ([]models.Event, error) {
+func (repository *EventRepository) GetLatestEventEachShow() ([]models.Event, error) {
 	var events []models.Event
 	err := repository.db.Table("events AS e").
 		Joins("INNER JOIN shows AS s ON e.show_id = s.id").

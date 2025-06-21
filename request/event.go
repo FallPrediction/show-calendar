@@ -5,7 +5,7 @@ type GetEventByShowIdRequest struct {
 	PerPage     int `form:"per_page" binding:"omitempty,numeric,min=1,max=50"`
 }
 
-type IndexEventsRequest struct {
+type LatestEventsRequest struct {
 	Date string `form:"date" binding:"required,datetime=2006-01-02"`
 }
 

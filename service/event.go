@@ -25,7 +25,7 @@ func (service *EventService) GetByShowId(id string, request *request.GetEventByS
 	return service.repository.GetByShowId(id, request)
 }
 
-func (service *EventService) Index(request *request.IndexEventsRequest) ([]models.Event, error) {
+func (service *EventService) GetLatestEvents(request *request.LatestEventsRequest) ([]models.Event, error) {
 	startDate, err := time.Parse(time.DateOnly, request.Date)
 	if err != nil {
 		return nil, err
@@ -35,8 +35,8 @@ func (service *EventService) Index(request *request.IndexEventsRequest) ([]model
 	return service.repository.Index(startDate, endDate)
 }
 
-func (service *EventService) GetLatestEvent() ([]models.Event, error) {
-	return service.repository.GetLatestEvent()
+func (service *EventService) GetLatestEventEachShow() ([]models.Event, error) {
+	return service.repository.GetLatestEventEachShow()
 }
 
 func (service *EventService) Create(request *request.CreateEventRequest) (models.Event, error) {
