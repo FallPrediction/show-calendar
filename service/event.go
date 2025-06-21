@@ -41,6 +41,8 @@ func (service *EventService) Create(request *request.CreateEventRequest) (models
 		return models.Event{}, err
 	}
 	name := service.getName(request.Name, meta)
+	startDate := service.getStartDate(request.StartDate)
+	endDate := service.getEndDate(startDate, request.EndDate)
 	event := models.Event{
 		ShowId:        request.ShowId,
 		Name:          name,
@@ -48,8 +50,8 @@ func (service *EventService) Create(request *request.CreateEventRequest) (models
 		OgUrl:         meta.Url,
 		OgTitle:       meta.Title,
 		OgDescription: meta.Description,
-		StartDate:     service.getStartDate(request.StartDate),
-		EndDate:       service.getEndDate(request.EndDate),
+		StartDate:     startDate,
+		EndDate:       endDate,
 	}
 	return event, service.repository.Create(&event)
 }
@@ -65,15 +67,14 @@ func (service *EventService) getStartDate(startDate string) datatypes.Date {
 	return datatypes.Date(result)
 }
 
-// If the parameter is empty, return the date in 30 days.
-func (service *EventService) getEndDate(endDate string) datatypes.Date {
+// If the parameter is empty, return start date.
+func (service *EventService) getEndDate(startDate datatypes.Date, endDate string) datatypes.Date {
 	var result time.Time
 	if endDate != "" {
 		result, _ = time.Parse(time.DateOnly, endDate)
-	} else {
-		result = time.Now().Add(time.Hour * 24 * 30)
+		return datatypes.Date(result)
 	}
-	return datatypes.Date(result)
+	return startDate
 }
 
 func (service *EventService) getName(name string, meta utils.OpenGraphMeta) string {
