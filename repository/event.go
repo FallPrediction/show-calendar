@@ -16,7 +16,7 @@ func (repository *EventRepository) GetByShowId(id string, request *request.GetEv
 	var events []models.Event
 	var count int64
 	repository.db.Model(&models.Event{}).Count(&count)
-	err := repository.db.Order("updated_at desc").Limit(request.PerPage).
+	err := repository.db.Order("start_date desc").Limit(request.PerPage).
 		Offset((request.CurrentPage-1)*request.PerPage).
 		Where("show_id = ?", id).
 		Find(&events).Error
