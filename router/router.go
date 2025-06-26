@@ -7,7 +7,7 @@ import (
 	"github.com/gin-gonic/gin"
 )
 
-func NewRouter(registerHandler handlers.RegisterHandler, authenticateHandler handlers.AuthenticateHandler, showHandler handlers.ShowHandler, eventHandler handlers.EventHandler) *gin.Engine {
+func NewRouter(registerHandler handlers.RegisterHandler, authenticateHandler handlers.AuthenticateHandler, showHandler handlers.ShowHandler, eventHandler handlers.EventHandler, userHandler handlers.UserHandler) *gin.Engine {
 	router := gin.Default()
 	router.Use(middleware.Cors())
 
@@ -26,6 +26,7 @@ func NewRouter(registerHandler handlers.RegisterHandler, authenticateHandler han
 		authorized.POST("/logout", authenticateHandler.Logout)
 		authorized.POST("/shows", showHandler.Create)
 		authorized.POST("/events", eventHandler.Create)
+		authorized.POST("/user/shows", userHandler.LikeShow)
 	}
 	return router
 }

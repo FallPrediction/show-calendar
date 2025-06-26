@@ -26,8 +26,10 @@ func main() {
 	eventRepository := repository.NewEventRepository(db)
 	eventService := service.NewEventService(eventRepository)
 	eventHandler := handlers.NewEventHandler(handler, eventService)
+	userService := service.NewUserService(userRepository)
+	userHandler := handlers.NewUserHandler(handler, userService)
 	rules.BindValidator(translator)
-	router := router.NewRouter(registerHandler, authenticateHandler, showHandler, eventHandler)
+	router := router.NewRouter(registerHandler, authenticateHandler, showHandler, eventHandler, userHandler)
 
 	router.Run()
 }

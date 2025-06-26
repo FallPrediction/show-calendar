@@ -20,6 +20,14 @@ func (repository *UserRepository) GetByEmail(email string) (models.User, error) 
 	return user, err
 }
 
+func (repository *UserRepository) LikeShow(userId, showId uint32) error {
+	var count int64
+	if repository.db.Table("user_shows").Where("user_id", userId).Where("show_id", showId).Count(&count); count > 0 {
+		return nil
+	}
+	return repository.db.Model(&models.User{Id: userId}).Association("Shows").Append(&models.Show{Id: showId})
+}
+
 func NewUserRepository(db *gorm.DB) UserRepository {
 	return UserRepository{db}
 }
