@@ -36,6 +36,7 @@ services:
       - go-docker-net
     env_file:
       - .env
+      - .env.docker
   nginx:
     image: nginx:1.27.5-alpine
     depends_on:

@@ -2,6 +2,8 @@ package utils
 
 import (
 	"net/http"
+	"show-calendar/errors"
+	"show-calendar/initialize"
 	"strings"
 
 	"golang.org/x/net/html"
@@ -27,6 +29,12 @@ func (o *OpenGraph) Fetch(url string) (OpenGraphMeta, error) {
 		if node.Type == html.ElementNode && node.Data == "meta" {
 			property, value := o.getOgContent(node.Attr)
 			o.setField(&meta, property, value)
+		}
+	}
+	if meta.Image != "" {
+		meta.Image, err = o.downloadImage(meta.Image)
+		if err != nil {
+			return meta, err
 		}
 	}
 	return meta, nil
@@ -79,4 +87,38 @@ func (o *OpenGraph) setField(meta *OpenGraphMeta, property, value string) {
 	case "og:description":
 		meta.Description = value
 	}
+}
+
+func (o *OpenGraph) downloadImage(url string) (string, error) {
+	logger := initialize.NewLogger()
+	resp, err := http.Get(url)
+	if err != nil {
+		logger.Error(err)
+		return "", err
+	}
+	ext, err := o.getExt(resp.Header.Get("content-type"))
+	if err == errors.ErrInvalidContentType {
+		return "", nil
+	} else if err != nil {
+		return "", err
+	}
+	uploader := NewUploader()
+	fileName, err := uploader.Upload(resp.Body, ext)
+	defer resp.Body.Close()
+	if err != nil {
+		logger.Error(err)
+		return "", err
+	}
+	return fileName, nil
+}
+
+func (o *OpenGraph) getExt(contentType string) (string, error) {
+	strArr := strings.Split(contentType, "/")
+	if len(strArr) == 2 {
+		if strArr[0] != "image" {
+			return "", errors.ErrInvalidContentType
+		}
+		return strArr[1], nil
+	}
+	return "jpeg", nil
 }
