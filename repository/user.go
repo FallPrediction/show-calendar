@@ -28,6 +28,10 @@ func (repository *UserRepository) LikeShow(userId, showId uint32) error {
 	return repository.db.Model(&models.User{Id: userId}).Association("Shows").Append(&models.Show{Id: showId})
 }
 
+func (repository *UserRepository) Unsubscribe(email string) error {
+	return repository.db.Table("users").Where("email = ?", email).Update("subscribe", false).Error
+}
+
 func NewUserRepository(db *gorm.DB) UserRepository {
 	return UserRepository{db}
 }

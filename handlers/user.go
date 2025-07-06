@@ -33,6 +33,12 @@ func (handler *UserHandler) LikeShow(c *gin.Context) {
 	})
 }
 
+func (handler *UserHandler) Unsubscribe(c *gin.Context) {
+	handler.baseHandler.handleErrorAndReturn(c, handler.service.Unsubscribe(c.Query("token")), func() {
+		handler.baseHandler.sendResponse(c, http.StatusOK, "取消訂閱成功", nil)
+	})
+}
+
 func NewUserHandler(handler Handler, service service.UserService) UserHandler {
 	return UserHandler{handler, service}
 }
