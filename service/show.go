@@ -36,7 +36,7 @@ func (s *ShowService) CreateShowAndEvent(request *request.CreateShowRequest) (mo
 		ShowId:        show.Id,
 		Name:          s.getName(meta, request.Name),
 		OgImage:       meta.Image,
-		OgUrl:         meta.Url,
+		OgUrl:         s.getUrl(meta.Url, request.TicketUrl),
 		OgTitle:       meta.Title,
 		OgDescription: meta.Description,
 		StartDate:     startDate,
@@ -78,6 +78,13 @@ func (s *ShowService) getName(meta utils.OpenGraphMeta, showName string) string 
 	}
 	nameRunes := []rune(name)
 	return string(nameRunes[:min(50, len(nameRunes))])
+}
+
+func (s *ShowService) getUrl(eventUrl string, ticketUrl string) string {
+	if len(eventUrl) == 0 {
+		return ticketUrl
+	}
+	return eventUrl
 }
 
 func NewShowService(repo repository.ShowRepository) ShowService {
