@@ -14,53 +14,53 @@ type EventHandler struct {
 	service     service.EventService
 }
 
-func (handler *EventHandler) GetByShowId(c *gin.Context) {
+func (h *EventHandler) GetByShowId(c *gin.Context) {
 	if err := c.ShouldBindUri(&struct {
 		id uint32 `form:"id" binding:"required,exists=shows id"`
 	}{}); err != nil {
-		handler.baseHandler.handleError(c, err)
+		h.baseHandler.handleError(c, err)
 		return
 	}
 	var request request.GetEventByShowIdRequest
 	if err := c.ShouldBind(&request); err != nil {
-		handler.baseHandler.handleError(c, err)
+		h.baseHandler.handleError(c, err)
 		return
 	}
 
-	events, count, err := handler.service.GetByShowId(c.Param("id"), &request)
+	events, count, err := h.service.GetByShowId(c.Param("id"), &request)
 
-	handler.baseHandler.handleErrorAndReturn(c, err, func() {
+	h.baseHandler.handleErrorAndReturn(c, err, func() {
 		resource := resource.NewEventSlice(events)
-		handler.baseHandler.sendResponseWithPagination(c, http.StatusOK, "成功", resource.ToSlice(), request.CurrentPage, request.PerPage, int(count))
+		h.baseHandler.sendResponseWithPagination(c, http.StatusOK, "成功", resource.ToSlice(), request.CurrentPage, request.PerPage, int(count))
 	})
 }
 
-func (handler *EventHandler) GetLatestEvents(c *gin.Context) {
-	events, err := handler.service.GetLatestEvents()
+func (h *EventHandler) GetLatestEvents(c *gin.Context) {
+	events, err := h.service.GetLatestEvents()
 
-	handler.baseHandler.handleErrorAndReturn(c, err, func() {
+	h.baseHandler.handleErrorAndReturn(c, err, func() {
 		resource := resource.NewEventSlice(events)
-		handler.baseHandler.sendResponse(c, http.StatusOK, "成功", resource.ToSlice())
+		h.baseHandler.sendResponse(c, http.StatusOK, "成功", resource.ToSlice())
 	})
 }
 
-func (handler *EventHandler) GetHomeEvents(c *gin.Context) {
-	events, err := handler.service.GetLatestEventEachShow()
-	handler.baseHandler.handleErrorAndReturn(c, err, func() {
+func (h *EventHandler) GetHomeEvents(c *gin.Context) {
+	events, err := h.service.GetLatestEventEachShow()
+	h.baseHandler.handleErrorAndReturn(c, err, func() {
 		resource := resource.NewEventSlice(events)
-		handler.baseHandler.sendResponse(c, http.StatusOK, "成功", resource.ToSlice())
+		h.baseHandler.sendResponse(c, http.StatusOK, "成功", resource.ToSlice())
 	})
 }
 
-func (handler *EventHandler) Create(c *gin.Context) {
+func (h *EventHandler) Create(c *gin.Context) {
 	var request request.CreateEventRequest
 	if err := c.ShouldBind(&request); err != nil {
-		handler.baseHandler.handleError(c, err)
+		h.baseHandler.handleError(c, err)
 		return
 	}
-	event, err := handler.service.Create(&request)
-	handler.baseHandler.handleErrorAndReturn(c, err, func() {
-		handler.baseHandler.sendResponse(c, http.StatusCreated, "成功", map[string]interface{}{"evnet": event})
+	event, err := h.service.Create(&request)
+	h.baseHandler.handleErrorAndReturn(c, err, func() {
+		h.baseHandler.sendResponse(c, http.StatusCreated, "成功", map[string]interface{}{"evnet": event})
 	})
 }
 

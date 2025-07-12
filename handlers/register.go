@@ -13,14 +13,14 @@ type RegisterHandler struct {
 	service     service.RegisterService
 }
 
-func (handler *RegisterHandler) Create(c *gin.Context) {
+func (h *RegisterHandler) Create(c *gin.Context) {
 	var request request.RegisterRequest
 	if err := c.ShouldBind(&request); err != nil {
-		handler.baseHandler.handleError(c, err)
+		h.baseHandler.handleError(c, err)
 		return
 	}
-	handler.baseHandler.handleErrorAndReturn(c, handler.service.Create(&request), func() {
-		handler.baseHandler.sendResponse(c, http.StatusCreated, "註冊成功", nil)
+	h.baseHandler.handleErrorAndReturn(c, h.service.Create(&request), func() {
+		h.baseHandler.sendResponse(c, http.StatusCreated, "註冊成功", nil)
 	})
 }
 

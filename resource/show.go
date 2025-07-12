@@ -6,13 +6,13 @@ type Show struct {
 	model models.Show
 }
 
-func (resource *Show) ToMap() map[string]interface{} {
+func (r *Show) ToMap() map[string]interface{} {
 	return map[string]interface{}{
-		"Id":        resource.model.Id,
-		"Name":      resource.model.Name,
-		"TicketUrl": resource.model.TicketUrl,
-		"StartDate": resource.model.StartDate,
-		"EndDate":   resource.model.EndDate,
+		"Id":        r.model.Id,
+		"Name":      r.model.Name,
+		"TicketUrl": r.model.TicketUrl,
+		"StartDate": r.model.StartDate,
+		"EndDate":   r.model.EndDate,
 	}
 }
 

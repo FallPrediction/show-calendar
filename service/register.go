@@ -12,7 +12,7 @@ type RegisterService struct {
 	repository repository.UserRepository
 }
 
-func (service *RegisterService) Create(request *request.RegisterRequest) error {
+func (s *RegisterService) Create(request *request.RegisterRequest) error {
 	password, err := (&utils.Hash{}).HashEncoded(request.Password)
 	if err != nil {
 		return errors.New("hash 密碼失敗")
@@ -22,7 +22,7 @@ func (service *RegisterService) Create(request *request.RegisterRequest) error {
 		Password: password,
 		Email:    request.Email,
 	}
-	return service.repository.Create(user)
+	return s.repository.Create(user)
 }
 
 func NewRegisterService(repo repository.UserRepository) RegisterService {

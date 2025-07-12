@@ -15,34 +15,34 @@ type EventService struct {
 	repository repository.EventRepository
 }
 
-func (service *EventService) GetByShowId(id string, request *request.GetEventByShowIdRequest) ([]models.Event, int64, error) {
+func (s *EventService) GetByShowId(id string, request *request.GetEventByShowIdRequest) ([]models.Event, int64, error) {
 	if request.CurrentPage == 0 {
 		request.CurrentPage = 1
 	}
 	if request.PerPage == 0 {
 		request.PerPage = 20
 	}
-	return service.repository.GetByShowId(id, request)
+	return s.repository.GetByShowId(id, request)
 }
 
-func (service *EventService) GetLatestEvents() ([]models.Event, error) {
+func (s *EventService) GetLatestEvents() ([]models.Event, error) {
 	lastMonth := time.Now().AddDate(0, -1, 0)
 	startDate := lastMonth.AddDate(0, 0, -lastMonth.Day()+1)
-	return service.repository.Index(startDate)
+	return s.repository.Index(startDate)
 }
 
-func (service *EventService) GetLatestEventEachShow() ([]models.Event, error) {
-	return service.repository.GetLatestEventEachShow()
+func (s *EventService) GetLatestEventEachShow() ([]models.Event, error) {
+	return s.repository.GetLatestEventEachShow()
 }
 
-func (service *EventService) Create(request *request.CreateEventRequest) (models.Event, error) {
+func (s *EventService) Create(request *request.CreateEventRequest) (models.Event, error) {
 	meta, err := (&utils.OpenGraph{}).Fetch(request.Url)
 	if err != nil {
 		return models.Event{}, err
 	}
-	name := service.getName(request.Name, meta)
-	startDate := service.getStartDate(request.StartDate)
-	endDate := service.getEndDate(startDate, request.EndDate)
+	name := s.getName(request.Name, meta)
+	startDate := s.getStartDate(request.StartDate)
+	endDate := s.getEndDate(startDate, request.EndDate)
 	event := models.Event{
 		ShowId:        request.ShowId,
 		Name:          name,
@@ -53,11 +53,11 @@ func (service *EventService) Create(request *request.CreateEventRequest) (models
 		StartDate:     startDate,
 		EndDate:       endDate,
 	}
-	return event, service.repository.Create(&event)
+	return event, s.repository.Create(&event)
 }
 
 // If the parameter is empty, return today's date.
-func (service *EventService) getStartDate(startDate string) datatypes.Date {
+func (s *EventService) getStartDate(startDate string) datatypes.Date {
 	var result time.Time
 	if startDate != "" {
 		result, _ = time.Parse(time.DateOnly, startDate)
@@ -68,7 +68,7 @@ func (service *EventService) getStartDate(startDate string) datatypes.Date {
 }
 
 // If the parameter is empty, return start date.
-func (service *EventService) getEndDate(startDate datatypes.Date, endDate string) datatypes.Date {
+func (s *EventService) getEndDate(startDate datatypes.Date, endDate string) datatypes.Date {
 	var result time.Time
 	if endDate != "" {
 		result, _ = time.Parse(time.DateOnly, endDate)
@@ -77,7 +77,7 @@ func (service *EventService) getEndDate(startDate datatypes.Date, endDate string
 	return startDate
 }
 
-func (service *EventService) getName(name string, meta utils.OpenGraphMeta) string {
+func (s *EventService) getName(name string, meta utils.OpenGraphMeta) string {
 	if name == "" {
 		description, _, _ := strings.Cut(meta.Description, "\n")
 		s := []rune(meta.Title + " " + description)

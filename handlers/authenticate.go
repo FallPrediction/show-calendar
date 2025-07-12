@@ -15,15 +15,15 @@ type AuthenticateHandler struct {
 	service     service.AuthenticateService
 }
 
-func (handler *AuthenticateHandler) Login(c *gin.Context) {
+func (h *AuthenticateHandler) Login(c *gin.Context) {
 	var request request.LoginRequest
 	if err := c.ShouldBind(&request); err != nil {
-		handler.baseHandler.handleError(c, err)
+		h.baseHandler.handleError(c, err)
 		return
 	}
-	token, expires, err := handler.service.Login(&request)
+	token, expires, err := h.service.Login(&request)
 	if errors.Is(err, gorm.ErrRecordNotFound) {
-		handler.baseHandler.sendResponse(c, http.StatusNotFound, "該信箱尚未註冊", nil)
+		h.baseHandler.sendResponse(c, http.StatusNotFound, "該信箱尚未註冊", nil)
 		return
 	}
 	http.SetCookie(c.Writer, &http.Cookie{
@@ -44,12 +44,12 @@ func (handler *AuthenticateHandler) Login(c *gin.Context) {
 		SameSite: http.SameSiteStrictMode,
 		Secure:   true,
 	})
-	handler.baseHandler.handleErrorAndReturn(c, err, func() {
-		handler.baseHandler.sendResponse(c, http.StatusOK, "登入成功", nil)
+	h.baseHandler.handleErrorAndReturn(c, err, func() {
+		h.baseHandler.sendResponse(c, http.StatusOK, "登入成功", nil)
 	})
 }
 
-func (handler *AuthenticateHandler) Logout(c *gin.Context) {
+func (h *AuthenticateHandler) Logout(c *gin.Context) {
 	http.SetCookie(c.Writer, &http.Cookie{
 		Name:   "authorization",
 		Value:  "",
@@ -62,7 +62,7 @@ func (handler *AuthenticateHandler) Logout(c *gin.Context) {
 		Path:   "/",
 		MaxAge: -1,
 	})
-	handler.baseHandler.sendResponse(c, http.StatusOK, "登出成功", nil)
+	h.baseHandler.sendResponse(c, http.StatusOK, "登出成功", nil)
 }
 
 func NewAuthenticateHandler(handler Handler, service service.AuthenticateService) AuthenticateHandler {

@@ -14,10 +14,10 @@ type UserHandler struct {
 	service     service.UserService
 }
 
-func (handler *UserHandler) LikeShow(c *gin.Context) {
+func (h *UserHandler) LikeShow(c *gin.Context) {
 	var request request.UserLikeShowRequest
 	if err := c.ShouldBind(&request); err != nil {
-		handler.baseHandler.handleError(c, err)
+		h.baseHandler.handleError(c, err)
 		return
 	}
 	userData, exists := c.Get("userData")
@@ -28,14 +28,14 @@ func (handler *UserHandler) LikeShow(c *gin.Context) {
 		c.Abort()
 		return
 	}
-	handler.baseHandler.handleErrorAndReturn(c, handler.service.LikeShow(&request, userData.(utils.UserData).UserId), func() {
-		handler.baseHandler.sendResponse(c, http.StatusCreated, "新增成功", nil)
+	h.baseHandler.handleErrorAndReturn(c, h.service.LikeShow(&request, userData.(utils.UserData).UserId), func() {
+		h.baseHandler.sendResponse(c, http.StatusCreated, "新增成功", nil)
 	})
 }
 
-func (handler *UserHandler) Unsubscribe(c *gin.Context) {
-	handler.baseHandler.handleErrorAndReturn(c, handler.service.Unsubscribe(c.Query("token")), func() {
-		handler.baseHandler.sendResponse(c, http.StatusOK, "取消訂閱成功", nil)
+func (h *UserHandler) Unsubscribe(c *gin.Context) {
+	h.baseHandler.handleErrorAndReturn(c, h.service.Unsubscribe(c.Query("token")), func() {
+		h.baseHandler.sendResponse(c, http.StatusOK, "取消訂閱成功", nil)
 	})
 }
 

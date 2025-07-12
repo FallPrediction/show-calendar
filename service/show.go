@@ -15,13 +15,13 @@ type ShowService struct {
 	repository repository.ShowRepository
 }
 
-func (service *ShowService) Show(id string) (models.Show, error) {
-	return service.repository.Show(id)
+func (s *ShowService) Show(id string) (models.Show, error) {
+	return s.repository.Show(id)
 }
 
-func (service *ShowService) CreateShowAndEvent(request *request.CreateShowRequest) (models.Show, models.Event, error) {
-	startDate := service.getStartDate(request.StartDate)
-	endDate := service.getEndDate(request.EndDate)
+func (s *ShowService) CreateShowAndEvent(request *request.CreateShowRequest) (models.Show, models.Event, error) {
+	startDate := s.getStartDate(request.StartDate)
+	endDate := s.getEndDate(request.EndDate)
 	meta, err := (&utils.OpenGraph{}).Fetch(request.TicketUrl)
 	if err != nil {
 		return models.Show{}, models.Event{}, err
@@ -34,7 +34,7 @@ func (service *ShowService) CreateShowAndEvent(request *request.CreateShowReques
 	}
 	event := models.Event{
 		ShowId:        show.Id,
-		Name:          service.getName(meta),
+		Name:          s.getName(meta),
 		OgImage:       meta.Image,
 		OgUrl:         meta.Url,
 		OgTitle:       meta.Title,
@@ -42,11 +42,11 @@ func (service *ShowService) CreateShowAndEvent(request *request.CreateShowReques
 		StartDate:     startDate,
 		EndDate:       endDate,
 	}
-	return show, event, service.repository.CreateShowAndEvent(&show, &event)
+	return show, event, s.repository.CreateShowAndEvent(&show, &event)
 }
 
 // If the parameter is empty, return today's date.
-func (service *ShowService) getStartDate(startDate string) datatypes.Date {
+func (s *ShowService) getStartDate(startDate string) datatypes.Date {
 	var result time.Time
 	if startDate != "" {
 		result, _ = time.Parse(time.DateOnly, startDate)
@@ -57,7 +57,7 @@ func (service *ShowService) getStartDate(startDate string) datatypes.Date {
 }
 
 // If the parameter is empty, return the date in 365 days.
-func (service *ShowService) getEndDate(endDate string) datatypes.Date {
+func (s *ShowService) getEndDate(endDate string) datatypes.Date {
 	var result time.Time
 	if endDate != "" {
 		result, _ = time.Parse(time.DateOnly, endDate)

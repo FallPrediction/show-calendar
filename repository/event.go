@@ -12,39 +12,39 @@ type EventRepository struct {
 	db *gorm.DB
 }
 
-func (repository *EventRepository) GetByShowId(id string, request *request.GetEventByShowIdRequest) ([]models.Event, int64, error) {
+func (r *EventRepository) GetByShowId(id string, request *request.GetEventByShowIdRequest) ([]models.Event, int64, error) {
 	var events []models.Event
 	var count int64
-	repository.db.Model(&models.Event{}).Count(&count)
-	err := repository.db.Order("start_date desc").Limit(request.PerPage).
+	r.db.Model(&models.Event{}).Count(&count)
+	err := r.db.Order("start_date desc").Limit(request.PerPage).
 		Offset((request.CurrentPage-1)*request.PerPage).
 		Where("show_id = ?", id).
 		Find(&events).Error
 	return events, count, err
 }
 
-func (repository *EventRepository) Index(startDate time.Time) ([]models.Event, error) {
+func (r *EventRepository) Index(startDate time.Time) ([]models.Event, error) {
 	var events []models.Event
-	err := repository.db.Order("start_date desc").
+	err := r.db.Order("start_date desc").
 		Where("end_date >= ?", startDate).
 		Find(&events).Error
 	return events, err
 }
 
-func (repository *EventRepository) GetLatestEventEachShow() ([]models.Event, error) {
+func (r *EventRepository) GetLatestEventEachShow() ([]models.Event, error) {
 	var events []models.Event
-	err := repository.db.Table("events AS e").
+	err := r.db.Table("events AS e").
 		Joins("INNER JOIN shows AS s ON e.show_id = s.id").
 		Where("NOW() <= s.end_date").
 		Where(
 			"(s.id, e.updated_at) IN (?)",
-			repository.db.Select("show_id", "MAX(updated_at)").Table("events").Group("show_id")).
+			r.db.Select("show_id", "MAX(updated_at)").Table("events").Group("show_id")).
 		Find(&events).Error
 	return events, err
 }
 
-func (repository *EventRepository) Create(event *models.Event) error {
-	return repository.db.Create(&event).Error
+func (r *EventRepository) Create(event *models.Event) error {
+	return r.db.Create(&event).Error
 }
 
 func NewEventRepository(db *gorm.DB) EventRepository {

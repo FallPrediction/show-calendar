@@ -15,9 +15,9 @@ type AuthenticateService struct {
 	repostiroy repository.UserRepository
 }
 
-func (service *AuthenticateService) Login(request *request.LoginRequest) (string, time.Time, error) {
+func (s *AuthenticateService) Login(request *request.LoginRequest) (string, time.Time, error) {
 	logger := initialize.NewLogger()
-	user, err := service.repostiroy.GetByEmail(request.Email)
+	user, err := s.repostiroy.GetByEmail(request.Email)
 	if err != nil {
 		return "", time.Time{}, err
 	}

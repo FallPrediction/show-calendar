@@ -8,9 +8,9 @@ type EventSlice struct {
 	modelSlice []models.Event
 }
 
-func (resource *EventSlice) ToSlice() []map[string]interface{} {
-	result := make([]map[string]interface{}, len(resource.modelSlice))
-	for i, m := range resource.modelSlice {
+func (r *EventSlice) ToSlice() []map[string]interface{} {
+	result := make([]map[string]interface{}, len(r.modelSlice))
+	for i, m := range r.modelSlice {
 		result[i] = map[string]interface{}{
 			"Id":            m.Id,
 			"Name":          m.Name,

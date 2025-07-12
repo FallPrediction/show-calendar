@@ -14,24 +14,24 @@ type ShowHandler struct {
 	service     service.ShowService
 }
 
-func (handler *ShowHandler) Show(c *gin.Context) {
+func (h *ShowHandler) Show(c *gin.Context) {
 	id := c.Param("id")
-	show, err := handler.service.Show(id)
-	handler.baseHandler.handleErrorAndReturn(c, err, func() {
+	show, err := h.service.Show(id)
+	h.baseHandler.handleErrorAndReturn(c, err, func() {
 		resourceObj := resource.NewShow(show)
-		handler.baseHandler.sendResponse(c, http.StatusOK, "成功", resourceObj.ToMap())
+		h.baseHandler.sendResponse(c, http.StatusOK, "成功", resourceObj.ToMap())
 	})
 }
 
-func (handler *ShowHandler) Create(c *gin.Context) {
+func (h *ShowHandler) Create(c *gin.Context) {
 	var request request.CreateShowRequest
 	if err := c.ShouldBind(&request); err != nil {
-		handler.baseHandler.handleError(c, err)
+		h.baseHandler.handleError(c, err)
 		return
 	}
-	show, event, err := handler.service.CreateShowAndEvent(&request)
-	handler.baseHandler.handleErrorAndReturn(c, err, func() {
-		handler.baseHandler.sendResponse(c, http.StatusCreated, "成功", map[string]interface{}{"show": show, "evnet": event})
+	show, event, err := h.service.CreateShowAndEvent(&request)
+	h.baseHandler.handleErrorAndReturn(c, err, func() {
+		h.baseHandler.sendResponse(c, http.StatusCreated, "成功", map[string]interface{}{"show": show, "evnet": event})
 	})
 }
 

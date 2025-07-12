@@ -10,14 +10,14 @@ type ShowRepository struct {
 	db *gorm.DB
 }
 
-func (repository *ShowRepository) Show(id string) (models.Show, error) {
+func (r *ShowRepository) Show(id string) (models.Show, error) {
 	var show models.Show
-	err := repository.db.Where("id = ?", id).First(&show).Error
+	err := r.db.Where("id = ?", id).First(&show).Error
 	return show, err
 }
 
-func (repository *ShowRepository) CreateShowAndEvent(show *models.Show, event *models.Event) error {
-	return repository.db.Transaction(func(tx *gorm.DB) error {
+func (r *ShowRepository) CreateShowAndEvent(show *models.Show, event *models.Event) error {
+	return r.db.Transaction(func(tx *gorm.DB) error {
 		if err := tx.Create(&show).Error; err != nil {
 			return err
 		}

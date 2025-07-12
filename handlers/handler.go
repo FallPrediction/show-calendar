@@ -16,35 +16,35 @@ type Handler struct {
 	translator ut.Translator
 }
 
-func (handler *Handler) handleErrorAndReturn(c *gin.Context, err error, onSuccess func()) {
+func (h *Handler) handleErrorAndReturn(c *gin.Context, err error, onSuccess func()) {
 	if err != nil {
-		handler.handleError(c, err)
+		h.handleError(c, err)
 		return
 	}
 	onSuccess()
 }
 
-func (handler *Handler) handleError(c *gin.Context, err error) {
+func (h *Handler) handleError(c *gin.Context, err error) {
 	logger := initialize.NewLogger()
 	switch {
 	case errors.As(err, &(validator.ValidationErrors{})):
-		handler.sendResponse(c, http.StatusUnprocessableEntity, err.(validator.ValidationErrors).Translate(handler.translator), nil)
+		h.sendResponse(c, http.StatusUnprocessableEntity, err.(validator.ValidationErrors).Translate(h.translator), nil)
 	case errors.Is(err, gorm.ErrRecordNotFound):
-		handler.sendResponse(c, http.StatusNotFound, "伺服器找不到請求的資源", nil)
+		h.sendResponse(c, http.StatusNotFound, "伺服器找不到請求的資源", nil)
 	default:
 		logger.Error("system error ", err)
-		handler.sendResponse(c, http.StatusUnprocessableEntity, "系統錯誤", nil)
+		h.sendResponse(c, http.StatusUnprocessableEntity, "系統錯誤", nil)
 	}
 }
 
-func (handler *Handler) sendResponse(c *gin.Context, statusCode int, message interface{}, data interface{}) {
+func (h *Handler) sendResponse(c *gin.Context, statusCode int, message interface{}, data interface{}) {
 	c.JSON(statusCode, gin.H{
 		"message": message,
 		"data":    data,
 	})
 }
 
-func (handler *Handler) sendResponseWithPagination(c *gin.Context, statusCode int, message interface{}, data interface{}, currentPage int, perPage int, total int) {
+func (h *Handler) sendResponseWithPagination(c *gin.Context, statusCode int, message interface{}, data interface{}, currentPage int, perPage int, total int) {
 	lastPage := int(math.Ceil(float64(total) / float64(perPage)))
 	c.JSON(statusCode, gin.H{
 		"message": message,
