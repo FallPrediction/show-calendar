@@ -18,9 +18,10 @@ func (s *RegisterService) Create(request *request.RegisterRequest) error {
 		return errors.New("hash 密碼失敗")
 	}
 	user := &models.User{
-		Name:     request.Name,
-		Password: password,
-		Email:    request.Email,
+		Name:      request.Name,
+		Password:  password,
+		Email:     request.Email,
+		Subscribe: true,
 	}
 	return s.repository.Create(user)
 }
