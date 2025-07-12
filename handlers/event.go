@@ -30,8 +30,8 @@ func (h *EventHandler) GetByShowId(c *gin.Context) {
 	events, count, err := h.service.GetByShowId(c.Param("id"), &request)
 
 	h.baseHandler.handleErrorAndReturn(c, err, func() {
-		resource := resource.NewEventSlice(events)
-		h.baseHandler.sendResponseWithPagination(c, http.StatusOK, "成功", resource.ToSlice(), request.CurrentPage, request.PerPage, int(count))
+		resource := resource.NewEventResource()
+		h.baseHandler.sendResponseWithPagination(c, http.StatusOK, "成功", resource.ToSlice(events), request.CurrentPage, request.PerPage, int(count))
 	})
 }
 
@@ -39,16 +39,16 @@ func (h *EventHandler) GetLatestEvents(c *gin.Context) {
 	events, err := h.service.GetLatestEvents()
 
 	h.baseHandler.handleErrorAndReturn(c, err, func() {
-		resource := resource.NewEventSlice(events)
-		h.baseHandler.sendResponse(c, http.StatusOK, "成功", resource.ToSlice())
+		resource := resource.NewEventResource()
+		h.baseHandler.sendResponse(c, http.StatusOK, "成功", resource.ToSlice(events))
 	})
 }
 
 func (h *EventHandler) GetHomeEvents(c *gin.Context) {
 	events, err := h.service.GetLatestEventEachShow()
 	h.baseHandler.handleErrorAndReturn(c, err, func() {
-		resource := resource.NewEventSlice(events)
-		h.baseHandler.sendResponse(c, http.StatusOK, "成功", resource.ToSlice())
+		resource := resource.NewEventResource()
+		h.baseHandler.sendResponse(c, http.StatusOK, "成功", resource.ToSlice(events))
 	})
 }
 
@@ -60,7 +60,8 @@ func (h *EventHandler) Create(c *gin.Context) {
 	}
 	event, err := h.service.Create(&request)
 	h.baseHandler.handleErrorAndReturn(c, err, func() {
-		h.baseHandler.sendResponse(c, http.StatusCreated, "成功", map[string]interface{}{"evnet": event})
+		resource := resource.NewEventResource()
+		h.baseHandler.sendResponse(c, http.StatusCreated, "成功", map[string]interface{}{"evnet": resource.ToMap(event)})
 	})
 }
 

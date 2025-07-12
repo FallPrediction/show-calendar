@@ -31,7 +31,8 @@ func (h *ShowHandler) Create(c *gin.Context) {
 	}
 	show, event, err := h.service.CreateShowAndEvent(&request)
 	h.baseHandler.handleErrorAndReturn(c, err, func() {
-		h.baseHandler.sendResponse(c, http.StatusCreated, "成功", map[string]interface{}{"show": show, "evnet": event})
+		resource := resource.NewEventResource()
+		h.baseHandler.sendResponse(c, http.StatusCreated, "成功", map[string]interface{}{"show": show, "evnet": resource.ToMap(event)})
 	})
 }
 
