@@ -80,7 +80,11 @@ func (s *EventService) getEndDate(startDate datatypes.Date, endDate string) data
 func (s *EventService) getName(name string, meta utils.OpenGraphMeta) string {
 	if name == "" {
 		description, _, _ := strings.Cut(meta.Description, "\n")
-		s := []rune(meta.Title + " " + description)
+		name = meta.Title
+		if len(description) > 0 {
+			name += " " + description
+		}
+		s := []rune(name)
 		return string(s[:min(50, len(s))])
 	}
 	return name

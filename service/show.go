@@ -34,7 +34,7 @@ func (s *ShowService) CreateShowAndEvent(request *request.CreateShowRequest) (mo
 	}
 	event := models.Event{
 		ShowId:        show.Id,
-		Name:          s.getName(meta),
+		Name:          s.getName(meta, request.Name),
 		OgImage:       meta.Image,
 		OgUrl:         meta.Url,
 		OgTitle:       meta.Title,
@@ -67,10 +67,17 @@ func (s *ShowService) getEndDate(endDate string) datatypes.Date {
 	return datatypes.Date(result)
 }
 
-func (service *ShowService) getName(meta utils.OpenGraphMeta) string {
+func (s *ShowService) getName(meta utils.OpenGraphMeta, showName string) string {
 	description, _, _ := strings.Cut(meta.Description, "\n")
-	s := []rune(meta.Title + " " + description)
-	return string(s[:min(50, len(s))])
+	name := meta.Title
+	if len(description) > 0 {
+		name += " " + description
+	}
+	if len(name) == 0 {
+		name = showName
+	}
+	nameRunes := []rune(name)
+	return string(nameRunes[:min(50, len(nameRunes))])
 }
 
 func NewShowService(repo repository.ShowRepository) ShowService {
