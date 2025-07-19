@@ -1,8 +1,8 @@
 package repository
 
 import (
-	"show-calendar/models"
-	"show-calendar/request"
+	"souflair/models"
+	"souflair/request"
 	"time"
 
 	"gorm.io/gorm"

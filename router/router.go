@@ -1,8 +1,8 @@
 package router
 
 import (
-	"show-calendar/handlers"
-	"show-calendar/middleware"
+	"souflair/handlers"
+	"souflair/middleware"
 
 	"github.com/gin-gonic/gin"
 )

@@ -2,8 +2,8 @@ package utils
 
 import (
 	"net/http"
-	"show-calendar/errors"
-	"show-calendar/initialize"
+	"souflair/errors"
+	"souflair/initialize"
 	"strings"
 
 	"golang.org/x/net/html"

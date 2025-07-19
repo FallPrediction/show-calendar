@@ -1,13 +1,13 @@
 package main
 
 import (
-	"show-calendar/config"
-	"show-calendar/handlers"
-	"show-calendar/initialize"
-	"show-calendar/repository"
-	"show-calendar/router"
-	"show-calendar/rules"
-	"show-calendar/service"
+	"souflair/config"
+	"souflair/handlers"
+	"souflair/initialize"
+	"souflair/repository"
+	"souflair/router"
+	"souflair/rules"
+	"souflair/service"
 )
 
 func main() {

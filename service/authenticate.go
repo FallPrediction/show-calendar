@@ -1,11 +1,11 @@
 package service
 
 import (
-	custom_errors "show-calendar/errors"
-	"show-calendar/initialize"
-	"show-calendar/repository"
-	"show-calendar/request"
-	"show-calendar/utils"
+	custom_errors "souflair/errors"
+	"souflair/initialize"
+	"souflair/repository"
+	"souflair/request"
+	"souflair/utils"
 	"time"
 
 	"github.com/matthewhartstonge/argon2"

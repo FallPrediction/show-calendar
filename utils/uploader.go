@@ -3,8 +3,8 @@ package utils
 import (
 	"context"
 	"io"
-	"show-calendar/config"
-	"show-calendar/initialize"
+	"souflair/config"
+	"souflair/initialize"
 
 	"github.com/aws/aws-sdk-go-v2/feature/s3/manager"
 	"github.com/aws/aws-sdk-go-v2/service/s3"

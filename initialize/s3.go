@@ -2,7 +2,7 @@ package initialize
 
 import (
 	"context"
-	"show-calendar/config"
+	"souflair/config"
 	"sync"
 
 	awsConfig "github.com/aws/aws-sdk-go-v2/config"

@@ -55,7 +55,7 @@ services:
     ports:
       - 9000:9000
     volumes:
-      - ../quasar:/frontend
+      - ../../quasar:/frontend
     networks:
       - go-docker-net
     stdin_open: true 

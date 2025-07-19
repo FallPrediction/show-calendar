@@ -2,8 +2,8 @@ package rules
 
 import (
 	"fmt"
-	"show-calendar/config"
-	"show-calendar/initialize"
+	"souflair/config"
+	"souflair/initialize"
 
 	"github.com/go-playground/validator/v10"
 )

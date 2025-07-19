@@ -1,6 +1,6 @@
 package resource
 
-import "show-calendar/models"
+import "souflair/models"
 
 type Show struct {
 	model models.Show

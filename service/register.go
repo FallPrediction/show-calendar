@@ -2,10 +2,10 @@ package service
 
 import (
 	"errors"
-	"show-calendar/models"
-	"show-calendar/repository"
-	"show-calendar/request"
-	"show-calendar/utils"
+	"souflair/models"
+	"souflair/repository"
+	"souflair/request"
+	"souflair/utils"
 )
 
 type RegisterService struct {

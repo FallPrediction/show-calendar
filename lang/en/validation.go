@@ -1,7 +1,7 @@
 package en
 
 import (
-	"show-calendar/lang"
+	"souflair/lang"
 )
 
 var ValidationTrans = []lang.ValidationTrans{

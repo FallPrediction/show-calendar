@@ -3,8 +3,8 @@ package handlers
 import (
 	"errors"
 	"net/http"
-	"show-calendar/request"
-	"show-calendar/service"
+	"souflair/request"
+	"souflair/service"
 
 	"github.com/gin-gonic/gin"
 	"gorm.io/gorm"

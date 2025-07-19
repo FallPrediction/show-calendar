@@ -5,7 +5,7 @@ import (
 	ut "github.com/go-playground/universal-translator"
 	"math"
 	"net/http"
-	"show-calendar/initialize"
+	"souflair/initialize"
 
 	"github.com/gin-gonic/gin"
 	"github.com/go-playground/validator/v10"

@@ -1,7 +1,7 @@
 package initialize
 
 import (
-	"show-calendar/config"
+	"souflair/config"
 	"sync"
 
 	"gorm.io/driver/postgres"

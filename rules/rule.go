@@ -1,10 +1,10 @@
 package rules
 
 import (
-	"show-calendar/initialize"
-	"show-calendar/lang"
-	en "show-calendar/lang/en"
-	zhtw "show-calendar/lang/zh-tw"
+	"souflair/initialize"
+	"souflair/lang"
+	en "souflair/lang/en"
+	zhtw "souflair/lang/zh-tw"
 	"strings"
 
 	"github.com/gin-gonic/gin/binding"

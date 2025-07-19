@@ -2,9 +2,9 @@ package handlers
 
 import (
 	"net/http"
-	"show-calendar/request"
-	"show-calendar/service"
-	"show-calendar/utils"
+	"souflair/request"
+	"souflair/service"
+	"souflair/utils"
 
 	"github.com/gin-gonic/gin"
 )

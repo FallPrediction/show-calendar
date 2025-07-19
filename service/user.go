@@ -1,9 +1,9 @@
 package service
 
 import (
-	"show-calendar/repository"
-	"show-calendar/request"
-	"show-calendar/utils"
+	"souflair/repository"
+	"souflair/request"
+	"souflair/utils"
 )
 
 type UserService struct {

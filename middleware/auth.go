@@ -2,7 +2,7 @@ package middleware
 
 import (
 	"net/http"
-	"show-calendar/utils"
+	"souflair/utils"
 
 	"github.com/gin-gonic/gin"
 )

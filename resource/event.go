@@ -1,8 +1,8 @@
 package resource
 
 import (
-	"show-calendar/config"
-	"show-calendar/models"
+	"souflair/config"
+	"souflair/models"
 )
 
 type EventResource struct{}

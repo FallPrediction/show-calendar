@@ -2,9 +2,9 @@ package utils
 
 import (
 	"os"
-	custom_errors "show-calendar/errors"
-	"show-calendar/initialize"
-	"show-calendar/models"
+	custom_errors "souflair/errors"
+	"souflair/initialize"
+	"souflair/models"
 	"strconv"
 	"time"
 
