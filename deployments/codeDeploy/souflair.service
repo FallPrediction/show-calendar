@@ -1,0 +1,12 @@
+[Unit]
+Description=Souflair backend service
+After=network.target
+
+[Service]
+User=root
+WorkingDirectory=/var/app
+ExecStart=/var/app/souflair
+Restart=always
+
+[Install]
+WantedBy=multi-user.target
