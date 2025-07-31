@@ -43,12 +43,23 @@ jobs:
           AWS_DEFAULT_REGION: ${{ secrets.AWS_DEFAULT_REGION  }}
 
       - name: Deploy to EC2
+        id: deploy
         run: |
-          aws deploy create-deployment \
-          --application-name ${{ vars.APP_NAME }} \
-          --deployment-config-name CodeDeployDefault.OneAtATime \
-          --deployment-group-name ${{ vars.CODEDEPLOY_DEV_GROUP }} \
-          --s3-location bucket=${{ vars.S3_BUCKET }},bundleType=tgz,key=${{ vars.CODEDEPLOY_DEV_GROUP }}.tgz
+          DEPLOY_ID=$(aws deploy create-deployment \
+            --application-name ${{ vars.APP_NAME }} \
+            --deployment-config-name CodeDeployDefault.OneAtATime \
+            --deployment-group-name ${{ vars.CODEDEPLOY_DEV_GROUP }} \
+            --s3-location bucket=${{ vars.S3_BUCKET }},bundleType=tgz,key=${{ vars.CODEDEPLOY_DEV_GROUP }}.tgz \
+            --query "deploymentId" \
+            --output text)
+          echo "DEPLOY_ID=$DEPLOY_ID" >> $GITHUB_OUTPUT
+        env:
+          AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID  }}
+          AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY  }}
+          AWS_DEFAULT_REGION: ${{ secrets.AWS_DEFAULT_REGION  }}
+
+      - name: Wait deployment successful
+        run: aws deploy wait deployment-successful --deployment-id ${{ steps.deploy.outputs.DEPLOY_ID }}
         env:
           AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID  }}
           AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY  }}
